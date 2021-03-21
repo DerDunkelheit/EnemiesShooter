@@ -18,7 +18,7 @@ void AEnemiesShooterPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
+	if (bMoveToMouseCursor && bUseMouseToMove)
 	{
 		MoveToMouseCursor();
 	}
@@ -101,6 +101,8 @@ void AEnemiesShooterPlayerController::SetNewMoveDestination(const FVector DestLo
 
 void AEnemiesShooterPlayerController::OnSetDestinationPressed()
 {
+    if(!bUseMouseToMove) return;
+	
 	// set flag to keep updating destination until released
 	bMoveToMouseCursor = true;
 }

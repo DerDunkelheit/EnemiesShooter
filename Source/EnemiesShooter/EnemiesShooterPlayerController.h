@@ -15,8 +15,12 @@ public:
 	AEnemiesShooterPlayerController();
 
 protected:
+
+	UPROPERTY(EditAnywhere)
+	bool bUseMouseToMove = true;
+	
 	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
+	bool bMoveToMouseCursor = false;
 
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;
