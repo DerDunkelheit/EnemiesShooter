@@ -88,3 +88,24 @@ void AEnemiesShooterCharacter::Tick(float DeltaSeconds)
 		}
 	}
 }
+
+//Probably we have to replace it to character controller class.
+void AEnemiesShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AEnemiesShooterCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this,&AEnemiesShooterCharacter::MoveRight);
+}
+
+void AEnemiesShooterCharacter::MoveForward(float Value)
+{
+	FVector direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	AddMovementInput(direction, Value);
+}
+
+void AEnemiesShooterCharacter::MoveRight(float Value)
+{
+	FVector direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	AddMovementInput(direction, Value);
+}
