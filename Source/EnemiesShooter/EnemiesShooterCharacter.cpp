@@ -44,7 +44,8 @@ AEnemiesShooterCharacter::AEnemiesShooterCharacter()
 	// Create a decal in the world to show the cursor's location
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(
+		TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
 	if (DecalMaterialAsset.Succeeded())
 	{
 		CursorToWorld->SetDecalMaterial(DecalMaterialAsset.Object);
@@ -57,9 +58,16 @@ AEnemiesShooterCharacter::AEnemiesShooterCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+void AEnemiesShooterCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetStrategy(new AttackAction());
+}
+
 void AEnemiesShooterCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 
 	if (CursorToWorld != nullptr)
 	{
@@ -95,7 +103,7 @@ void AEnemiesShooterCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AEnemiesShooterCharacter::MoveForward);
-	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this,&AEnemiesShooterCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AEnemiesShooterCharacter::MoveRight);
 }
 
 void AEnemiesShooterCharacter::MoveForward(float Value)
@@ -108,4 +116,15 @@ void AEnemiesShooterCharacter::MoveRight(float Value)
 {
 	FVector direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	AddMovementInput(direction, Value);
+}
+
+void AEnemiesShooterCharacter::SetStrategy(Strategy* newStrategy)
+{
+	delete this->currentAction;
+	this->currentAction = newStrategy;
+}
+
+void AEnemiesShooterCharacter::BlueprintProviderMethod()
+{
+	currentAction->DoAction();
 }

@@ -6,6 +6,31 @@
 #include "GameFramework/Character.h"
 #include "EnemiesShooterCharacter.generated.h"
 
+class Strategy
+{
+public:
+	virtual ~Strategy() = default;
+	virtual void DoAction() const = 0;
+};
+
+class PrintHelloAction : public Strategy
+{
+public:
+	virtual void DoAction() const override
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Orange, "Hello!");
+	}
+};
+
+class AttackAction : public Strategy
+{
+public:
+	virtual void DoAction() const override
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Orange, "Do Attack!");
+	}
+};
+
 UCLASS(Blueprintable)
 class AEnemiesShooterCharacter : public ACharacter
 {
@@ -26,6 +51,10 @@ public:
 
 protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
+    void BlueprintProviderMethod();
 
 private:
 	/** Top down camera */
@@ -42,5 +71,8 @@ private:
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+
+	Strategy *currentAction;
+	void SetStrategy(Strategy* newStrategy);
 };
 
